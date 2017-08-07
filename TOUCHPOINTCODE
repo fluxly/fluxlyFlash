@@ -1,0 +1,31 @@
+/* Following function gets the body from a cordinate (x, y)*/
+      public function GetBodyAtPoint(px:Number, py:Number, includeStatic:Boolean = false){
+         // Make a small box.
+         var px2 = px/physScale;
+         var py2 = py/physScale;
+         var PointVec:b2Vec2 = new b2Vec2();
+         PointVec.Set(px2, py2);
+         var aabb:b2AABB = new b2AABB();
+         aabb.lowerBound.Set(px2 - 0.001, py2 - 0.001);
+         aabb.upperBound.Set(px2 + 0.001, py2 + 0.001);
+         
+         // Query the world for overlapping shapes.
+         var k_maxCount:int = 10;
+         var shapes:Array = new Array();
+         var count:int = m_world.Query(aabb, shapes, k_maxCount);
+         var body:b2Body = null;
+         for (var i:int = 0; i < count; ++i)
+         {
+            if (shapes[i].m_body.IsStatic() == false || includeStatic)
+            {
+               var tShape:b2Shape = shapes[i] as b2Shape;
+               var inside:Boolean = tShape.TestPoint(tShape.m_body.GetXForm(), PointVec);
+               if (inside)
+               {
+                  body = tShape.m_body;
+                  break;
+               }
+            }
+         }
+         return body;
+      }

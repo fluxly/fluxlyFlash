@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2007/08/07/creating-full-screen-flex-applications/ -->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" applicationComplete="init()">
+
+    <mx:Script>
+        <![CDATA[
+            import flash.display.StageDisplayState;
+            import mx.managers.SystemManager;
+
+            private function init():void {
+                /* Set up full screen handler. */
+                systemManager.stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreenHandler);
+                dispState = systemManager.stage.displayState;
+		addChild(Main as DisplayObject);
+            }
+
+            private function fullScreenHandler(evt:FullScreenEvent):void {
+                dispState = systemManager.stage.displayState + " (fullScreen=" + evt.fullScreen.toString() + ")";
+                if (evt.fullScreen) {
+                    /* Do something specific here if we switched to full screen mode. */
+                } else {
+                    /* Do something specific here if we switched to normal mode. */
+                }
+            }
+
+            private function toggleFullScreen():void {
+                try {
+                    switch (systemManager.stage.displayState) {
+                        case StageDisplayState.FULL_SCREEN:
+                            /* If already in full screen mode, switch to normal mode. */
+                            systemManager.stage.displayState = StageDisplayState.NORMAL;
+                            break;
+                        default:
+                            /* If not in full screen mode, switch to full screen mode. */
+                            systemManager.stage.displayState = StageDisplayState.FULL_SCREEN;
+                            break;
+                    }
+                } catch (err:SecurityError) {
+                    // ignore
+                }
+                
+            }
+        ]]>
+    </mx:Script>
+
+    <mx:String id="dispState" />
+
+    <mx:Label text="width={Application.application.width}" />
+    <mx:Label text="height={Application.application.height}" />
+    <mx:Label text="displayState={dispState}" />
+
+    <mx:Button label="Play!" click="toggleFullScreen()" />
+
+</mx:Application>
